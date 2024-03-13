@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 
 def get_company_info(url):
-    # URLにアクセスしてHTMLを取得する
+    # URLにアクセスしてHTMLを取得
     response = requests.get(url)
     soup = BeautifulSoup(response.text, 'html.parser')
     
