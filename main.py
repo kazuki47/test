@@ -5,7 +5,7 @@ from urllib.parse import urljoin
 def get_company_info(url):
     # URLにアクセスしてHTMLを取得する
     response = requests.get(url)
-    soup = BeautifulSoup(response.text, 'html.parser')
+    soup = BeautifulSoup(response.content, 'html.parser')
     
     # ulタグの中から子ページのURLを取得
     ul_tag = soup.find('ul', class_='rnn-group rnn-group--xm rnn-jobOfferList')
@@ -20,7 +20,7 @@ def get_company_info(url):
 def get_company_info_details(url):
     # URLにアクセスしてHTMLを取得
     response = requests.get(url)
-    soup = BeautifulSoup(response.text, 'html.parser')
+    soup = BeautifulSoup(response.content, 'html.parser')
 
     # 会社情報の取得
     company_div = soup.find('div', class_='rn3-companyOfferCompany')
@@ -42,6 +42,16 @@ def get_company_info_details(url):
             print(f"代表者: {p_tags[h3_indices['代表者']].text.strip()}")
         if h3_indices['企業代表番号'] != -1:
             print(f"企業代表番号: {p_tags[h3_indices['企業代表番号']].text.strip()}")
+        else:
+            # '企業代表番号'が見つからない場合
+            entry_div = soup.find('div', class_='rn3-companyOfferEntry')
+            if entry_div:
+                h3_tags = entry_div.find_all('h3')
+                div_tags = entry_div.find_all('div', class_='rn3-companyOfferEntry__info')
+                for h3_tag, div_tag in zip(h3_tags, div_tags):
+                    if h3_tag.text.strip() == '連絡先':
+                        print(f"連絡先: {div_tag.text.strip()}")
+
         print('-------------------')
     else:
         # 'rn3-companyOfferCompany'がない場合は、'rn3-companyOfferTabMenu__navItem'からURLを取得
@@ -54,10 +64,12 @@ def get_company_info_details(url):
                     link = urljoin('https://next.rikunabi.com', a_tag['href'])
                     get_company_info_details(link)
 
+
+
 # 次のページのURLを取得する関数
 def get_next_page_url(url):
     response = requests.get(url)
-    soup = BeautifulSoup(response.text, 'html.parser')
+    soup = BeautifulSoup(response.content, 'html.parser')
     next_page_tag = soup.find('li', class_='rnn-pagination__next')
     if next_page_tag:
         next_page_link = urljoin('https://next.rikunabi.com', next_page_tag.find('a')['href'])
@@ -66,14 +78,14 @@ def get_next_page_url(url):
         return None
 
 # 初期URLを指定
-initial_url = 'https://next.rikunabi.com/lst'
+initial_url = 'https://next.rikunabi.com/lst/'
 current_url = initial_url
 page_count = 1
 
 # メインの処理ループ
 while current_url:
     # 会社情報を取得して出力
-    print(f"Page {page_count}")
+    print(f"Page {page_count} ,{current_url}")
     get_company_info(current_url)
 
     # 次のページのURLを取得
