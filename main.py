@@ -43,7 +43,7 @@ def get_company_info_details(url):
         if h3_indices['企業代表番号'] != -1:
             print(f"企業代表番号: {p_tags[h3_indices['企業代表番号']].text.strip()}")
         else:
-            # '企業代表番号'が見つからない場合
+            # '企業代表番号'が見つからない場合'連絡先'を出力
             entry_div = soup.find('div', class_='rn3-companyOfferEntry')
             if entry_div:
                 h3_tags = entry_div.find_all('h3')
