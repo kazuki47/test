@@ -26,7 +26,7 @@ def get_company_info_details(url):
     company_div = soup.find('div', class_='rn3-companyOfferCompany')
     if company_div:
         company_info_divs = company_div.find_all('div', class_='rn3-companyOfferCompany__info')
-        h3_indices = {'社名': -1, '代表者': -1, '企業代表番号': -1}
+        h3_indices = {'社名': -1, '代表者': -1, '従業員数': -1,'本社所在地': -1, '事業所': -1,'企業代表番号': -1}
 
         for index, info_div in enumerate(company_info_divs):
             h3_tags = info_div.find_all('h3')
@@ -40,6 +40,12 @@ def get_company_info_details(url):
             print(f"社名: {p_tags[h3_indices['社名']].text.strip()}")
         if h3_indices['代表者'] != -1:
             print(f"代表者: {p_tags[h3_indices['代表者']].text.strip()}")
+        if h3_indices['従業員数'] != -1:
+            print(f"従業員数: {p_tags[h3_indices['従業員数']].text.strip()}")
+        if h3_indices['事業所'] != -1:
+            print(f"事業所: {p_tags[h3_indices['事業所']].text.strip()}")
+        if h3_indices['本社所在地'] != -1:
+            print(f"本社所在地: {p_tags[h3_indices['本社所在地']].text.strip()}")
         if h3_indices['企業代表番号'] != -1:
             print(f"企業代表番号: {p_tags[h3_indices['企業代表番号']].text.strip()}")
         else:
